@@ -138,6 +138,21 @@ class ApiInstance {
 }
 ```
 
+## Utils
+
+```ts
+import { utils } from "@bililive/rec-sdk";
+
+utils.generateExampleFilename("{roomid}/{date}/{time}.flv")
+// => "14846654/20201230/080000.flv"
+
+utils.getRoomId("https://live.bilibili.com/14846654?search=42#hash")
+// => 14846654
+
+utils.validateCookie("_uuid=ffffff; buvid3=ffffff...")
+// => true
+```
+
 ## Service
 
 Usage:
