@@ -4,7 +4,6 @@ typescript sdk for Bililive/BililiveRecorder
 
 TODO:
 
-- [ ] Optional Types
 - [ ] Test case
 
 ## Sdk
