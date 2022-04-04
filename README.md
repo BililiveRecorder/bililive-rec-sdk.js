@@ -15,7 +15,7 @@ Usage:
 import { BililiveRec } from "@bililive/rec-sdk"
 
 const server = new BililiveRec({ httpUrl: "http://localhost:1453" });
-const server2 = new BililiveRec({ httpUrl: "http://localhost:1453" });
+const server2 = new BililiveRec({ httpUrl: "http://localhost:1454" });
 
 await server.setConfig({ ... })
 
