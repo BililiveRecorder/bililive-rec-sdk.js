@@ -1,0 +1,30 @@
+import { AxiosInstance, AxiosRequestConfig, Method } from "axios";
+
+import {
+  __ref_types__
+} from "./types";
+
+const genApi = function (url: string, method: Method, pathParam?: string) {
+  return function (this: ApiInstance, resId: any, payload?: any): any {
+    if (pathParam) {
+      url = url.replace(`{${pathParam}}`, resId);
+    } else {
+      payload = resId;
+    }
+
+    const config: Partial<AxiosRequestConfig> = { method, url };
+
+    if (method === "get") {
+      config.params = payload;
+    } else if (method === "post") {
+      config.data = payload;
+    }
+
+    return this.axios.request(config).then((resp) => resp.data);
+  };
+};
+
+export class ApiInstance {
+  constructor(public axios: AxiosInstance) { }
+  __methods__
+}
