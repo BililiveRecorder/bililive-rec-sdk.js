@@ -1,6 +1,6 @@
 {
   "name": "@bililive/rec-sdk",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "typescript sdk for Bililive/BililiveRecorder",
   "main": "dist/index.js",
   "repository": "git@github.com:anitya-tech/bililive-rec-sdk.js.git",
