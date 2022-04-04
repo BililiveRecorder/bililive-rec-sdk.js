@@ -139,6 +139,53 @@ class ApiInstance {
 }
 ```
 
+## Service
+
+Usage:
+
+```ts
+import { startService, BililiveRecService } from "@bililive/rec-sdk/dist/service";
+
+const [bililiveRec] = startService({ workdir: "somewhere" });
+
+const service = new BililiveRecService({ workdir: "somewhere" });
+const [bililiveRec] = await service.start();
+service.stop();
+```
+
+Environments:
+
+`HTTP_HOST`, `HTTP_PORT`, `EXEC_PATH`, `WORKDIR`
+
+Definitions:
+
+```ts
+export interface ServiceOptions {
+  httpHost?: string;
+  httpPort?: number;
+  execPath?: string;
+  workdir?: string;
+}
+
+export class BililiveRecService {
+  private options?;
+  httpHost?: string;
+  httpPort?: number;
+  execPath?: string;
+  workdir?: string;
+  bililiveRec?: BililiveRec;
+  process?: ChildProcessWithoutNullStreams;
+  constructor(options?: ServiceOptions | undefined);
+  start(): Promise<[
+      bililiveRec: BililiveRec,
+      process: ChildProcessWithoutNullStreams
+  ]>;
+  stop(): void;
+}
+export const startService: (opts?: ServiceOptions | undefined) =>
+  Promise<[bililiveRec: BililiveRec, process: ChildProcessWithoutNullStreams]>;
+```
+
 ## Develop
 
 generator api and it's type:
