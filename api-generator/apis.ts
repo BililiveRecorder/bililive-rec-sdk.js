@@ -93,7 +93,7 @@ export const generateApiFile = (paths: OA.PathsObject): string => {
     }
   }
 
-  let code = fs.readFileSync("src/api-generator/api-ts.tmpl", "utf-8");
+  let code = fs.readFileSync("api-generator/api-ts.tmpl", "utf-8");
 
   code = code.replace("__ref_types__", [...refTypes].sort().join(`,\n${tab}`));
   code = code.replace(
