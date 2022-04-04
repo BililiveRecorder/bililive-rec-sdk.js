@@ -33,7 +33,15 @@ const generateApiCode = (
   if (bodyDef) {
     const [type, refs] = parseType(bodyDef.schema as RawShema);
     refs && refTypes.push(...refs);
-    params.push(`payload: ${type}`);
+    if (
+      name === "setGlobalConfig" ||
+      name === "setRoomConfigByRoomId" ||
+      name === "setRoomConfigByObjectId"
+    ) {
+      params.push(`payload: Partial<${type}>`);
+    } else {
+      params.push(`payload: ${type}`);
+    }
   }
 
   let responseType = "void";

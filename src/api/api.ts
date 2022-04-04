@@ -47,7 +47,7 @@ export class ApiInstance {
   getGlobalConfig = genApi("/api/config/global", "get") as () => Promise<GlobalConfigDto>
 
   // 设置全局设置
-  setGlobalConfig = genApi("/api/config/global", "post") as (payload: SetGlobalConfig) => Promise<GlobalConfigDto>
+  setGlobalConfig = genApi("/api/config/global", "post") as (payload: Partial<SetGlobalConfig>) => Promise<GlobalConfigDto>
 
   // 列出所有直播间
   listRooms = genApi("/api/room", "get") as () => Promise<RoomDto[]>
@@ -77,13 +77,13 @@ export class ApiInstance {
   getRoomConfigByRoomId = genApi("/api/room/{roomId}/config", "get", "roomId") as (roomId: number) => Promise<RoomConfigDto>
 
   // 修改直播间设置
-  setRoomConfigByRoomId = genApi("/api/room/{roomId}/config", "post", "roomId") as (roomId: number, payload: SetRoomConfig) => Promise<RoomConfigDto>
+  setRoomConfigByRoomId = genApi("/api/room/{roomId}/config", "post", "roomId") as (roomId: number, payload: Partial<SetRoomConfig>) => Promise<RoomConfigDto>
 
   // 读取直播间设置
   getRoomConfigByObjectId = genApi("/api/room/{objectId}/config", "get", "objectId") as (objectId: string) => Promise<RoomConfigDto>
 
   // 修改直播间设置
-  setRoomConfigByObjectId = genApi("/api/room/{objectId}/config", "post", "objectId") as (objectId: string, payload: SetRoomConfig) => Promise<RoomConfigDto>
+  setRoomConfigByObjectId = genApi("/api/room/{objectId}/config", "post", "objectId") as (objectId: string, payload: Partial<SetRoomConfig>) => Promise<RoomConfigDto>
 
   // 开始录制
   startRecordByRoomId = genApi("/api/room/{roomId}/start", "post", "roomId") as (roomId: number) => Promise<RoomDto>

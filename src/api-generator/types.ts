@@ -9,10 +9,24 @@ export type RawShema = OA.SchemaObject & {
   };
 };
 
-export const parseType = (
-  def: RawShema,
-  depth = 0
-): [type: string, refs?: string[]] => {
+export type ParsedResult = [type: string, refs?: string[]];
+
+const tryIfBlOptional = (def: OA.SchemaObject): ParsedResult | false => {
+  const type = def.type;
+  const properties = def.properties as { [s: string]: OA.SchemaObject };
+  if (
+    type === "object" &&
+    Object.keys(properties).length === 2 &&
+    properties.hasValue?.type === "boolean" &&
+    properties.value
+  ) {
+    const [type, refs] = parseType(properties.value);
+    return [`BlOptional<${type}>`, refs];
+  }
+  return false;
+};
+
+export const parseType = (def: RawShema, depth = 0): ParsedResult => {
   if (def.type === "array") {
     const [innerType, refs] = parseType(def.items, depth + 1);
     return [`${innerType}[]`, refs];
@@ -22,6 +36,8 @@ export const parseType = (
     const prefix = "#/components/schemas/";
     if (def.$ref.startsWith(prefix)) {
       const type = def.$ref.split(prefix)[1];
+      const replaceType = blOptionalTypeMap[type];
+      if (replaceType) return [replaceType, ["BlOptional"]];
       return [type, [type]];
     }
     console.error("renderType.$ref:", def);
@@ -34,6 +50,8 @@ export const parseType = (
   }
 
   if (def.type === "object") {
+    const blDef = tryIfBlOptional(def);
+    if (blDef) return blDef;
     const curTabs = tab.repeat(depth);
     const innerTabs = tab.repeat(depth + 1);
     if (!def.properties) {
@@ -67,15 +85,26 @@ ${curTabs}}`,
   return ["unknown"];
 };
 
-const generateTypeDef = (name: string, schema: RawShema): string => {
-  if (schema.type === "object")
-    return `export interface ${name} ${parseType(schema)[0]}`;
+const blOptionalTypeMap: Record<string, string> = {};
+
+const generateTypeDef = (
+  name: string,
+  schema: RawShema
+): string | undefined => {
+  const [type] = parseType(schema);
+
+  if (type.startsWith("BlOptional<")) {
+    blOptionalTypeMap[name] = type;
+    return;
+  }
+
+  if (schema.type === "object") return `export interface ${name} ${type}`;
 
   if (schema.enum) {
     if (knownEnums[name]) return knownEnums[name];
 
     console.log("unknown enum:", name, schema);
-    return `export type ${name} = ${parseType(schema)[0]}`;
+    return `export type ${name} = ${type}`;
   }
 
   console.log(schema.type, name, schema);
@@ -83,7 +112,20 @@ const generateTypeDef = (name: string, schema: RawShema): string => {
 };
 
 export const generateTypeFile = (schemas: { [type: string]: RawShema }) => {
-  return Object.entries(schemas)
+  let body = `export interface BlOptional<T> {
+  hasValue: boolean;
+  value: null | T;
+}
+`;
+
+  Object.entries(schemas).map(([name, schema]) =>
+    generateTypeDef(name, schema)
+  );
+
+  body += Object.entries(schemas)
     .map(([name, schema]) => generateTypeDef(name, schema))
+    .filter((i) => i)
     .join("\n\n");
+
+  return body;
 };
