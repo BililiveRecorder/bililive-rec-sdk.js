@@ -6,7 +6,7 @@ import {
   SetRoomConfig,
 } from "../api";
 
-import { SdkCtxOptions, SdkBase, SdkContext } from "./base";
+import { SdkBase, SdkContext, SdkCtxOptions } from "./base";
 
 export class Room extends SdkBase implements RoomDto {
   private config?: RoomConfigDto;

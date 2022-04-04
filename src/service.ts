@@ -1,8 +1,10 @@
-import { BililiveRec } from "./sdk";
-import portfinder from "portfinder";
 import { ChildProcessWithoutNullStreams, spawn } from "child_process";
+
+import portfinder from "portfinder";
+
+import { BililiveRec } from "./sdk";
+import { env, separatedPromise } from "./utils";
 import { Webhook, WebhookOptions } from "./webhook";
-import { env, SeparatedPromise } from "./utils";
 
 export interface ServiceOptions {
   host?: string;
@@ -16,7 +18,7 @@ export class BililiveRecService {
   private constructor(
     public host: string,
     public port: number,
-    public execPath: string,
+    public binPath: string,
     public workdir: string,
     public bililiveRec: BililiveRec,
     public webhook: Webhook | null,
@@ -24,7 +26,7 @@ export class BililiveRecService {
   ) {}
   static async create(options?: ServiceOptions): Promise<BililiveRecService> {
     const host = options?.host ?? env("BL_REC_API_HOST") ?? "localhost";
-    const execPath =
+    const binPath =
       options?.binPath ?? env("BL_REC_PATH") ?? "BililiveRecorder.Cli";
     const workdir = options?.workdir ?? env("BL_REC_WORKDIR") ?? process.cwd();
     const port =
@@ -37,7 +39,7 @@ export class BililiveRecService {
       webhook =
         whOpts === true ? await Webhook.create() : await Webhook.create(whOpts);
 
-    const recProcess = spawn(execPath, [
+    const recProcess = spawn(binPath, [
       "run",
       "--web-bind",
       `http://${host}:${port}`,
@@ -49,7 +51,7 @@ export class BililiveRecService {
       httpUrl: `http://${apiHost}:${port}`,
     });
 
-    const waitProcess = new SeparatedPromise<void>();
+    const waitProcess = separatedPromise<void>();
     recProcess.once("exit", waitProcess.reject);
     const dataListener = (chunk: Buffer) => {
       if (!chunk.includes("Content root path")) return;
@@ -57,7 +59,7 @@ export class BililiveRecService {
       waitProcess.resolve();
     };
     recProcess.stdout.addListener("data", dataListener);
-    await waitProcess;
+    await waitProcess.promise;
 
     if (webhook)
       await bililiveRec.setConfig({
@@ -70,7 +72,7 @@ export class BililiveRecService {
     return new BililiveRecService(
       host,
       port,
-      execPath,
+      binPath,
       workdir,
       bililiveRec,
       webhook,

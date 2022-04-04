@@ -63,13 +63,20 @@ export function env(
   return null;
 }
 
-export class SeparatedPromise<T> extends Promise<T> {
-  public resolve: (v: T) => void = () => {};
-  public reject: (v: unknown) => void = () => {};
-  constructor() {
-    super((resolve, reject) => {
-      this.resolve = resolve;
-      this.reject = reject;
-    });
-  }
+export interface SeparatedPromise<T> {
+  promise: Promise<T>;
+  resolve: (v: T) => void;
+  reject: (v?: unknown) => void;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+function empty() {}
+export function separatedPromise<T>(): SeparatedPromise<T> {
+  let resolve: (v: T) => void = empty;
+  let reject: (v: unknown) => void = empty;
+  const promise = new Promise<T>((r, rj) => {
+    resolve = r;
+    reject = rj;
+  });
+  return { promise, resolve, reject };
 }

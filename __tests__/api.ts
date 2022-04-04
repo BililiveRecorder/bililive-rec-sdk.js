@@ -1,24 +1,24 @@
 import { ApiInstance, GlobalConfigDto, SetGlobalConfig } from "../src/api";
 // @ts-ignore
-import { execPath, newWorkdir } from "./init";
+import { binPath, newWorkdir } from "./init";
 import { BililiveRecService } from "../src/service";
 
 describe("api", () => {
-  const service = new BililiveRecService({
-    execPath,
-    workdir: newWorkdir(),
-  });
+  let service: BililiveRecService;
   let api: ApiInstance;
 
   beforeAll(async () => {
-    const [bililiveRec] = await service.start();
-    api = bililiveRec.ctx.api;
+    service = await BililiveRecService.create({
+      binPath,
+      workdir: newWorkdir(),
+    });
+    api = service.bililiveRec.ctx.api;
     console.log("service.workdir", service.workdir);
-  }, 10000);
+  });
 
   afterAll(() => service.stop());
 
-  test("api.getVersion", async () => {
+  test("getVersion", async () => {
     await expect(api.getVersion()).resolves.toEqual(
       expect.objectContaining({
         major: "1",
@@ -27,7 +27,7 @@ describe("api", () => {
     );
   });
 
-  test("api.getDefaultConfig", async () => {
+  test("getDefaultConfig", async () => {
     await expect(api.getDefaultConfig()).resolves.toEqual(
       expect.objectContaining({
         recordFilenameFormat:
@@ -36,7 +36,7 @@ describe("api", () => {
     );
   });
 
-  test("api.getGlobalConfig & api.setGlobalConfig", async () => {
+  test("getGlobalConfig & setGlobalConfig", async () => {
     const initConfig = {
       optionalCuttingMode: {
         hasValue: false,

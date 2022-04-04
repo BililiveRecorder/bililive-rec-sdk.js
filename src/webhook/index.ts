@@ -1,11 +1,13 @@
+import { Server } from "http";
+import path from "path";
+
+import eventemitter3 from "eventemitter3";
 import express, { Application } from "express";
 import portfinder from "portfinder";
-import eventemitter3 from "eventemitter3";
+
+import { env, separatedPromise } from "../utils";
 
 import { BililiveRecEvent, BililiveRecEventMap } from "./types";
-import { env, SeparatedPromise } from "../utils";
-import path from "path";
-import { Server } from "http";
 
 export interface WebhookOptions {
   host?: string;
@@ -55,10 +57,10 @@ export class Webhook extends eventemitter3<{
       env("WEBHOOK_POST", "int") ??
       (await portfinder.getPortPromise({ host: host, port: 9000 }));
 
-    const waitServerUp = new SeparatedPromise<void>();
+    const waitServerUp = separatedPromise<void>();
     const app = express();
     const server = app.listen(port, host, () => waitServerUp.resolve());
-    await waitServerUp;
+    await waitServerUp.promise;
     return new Webhook(host, port, pathPrefix, app, server);
   }
   stop(): Promise<void> {

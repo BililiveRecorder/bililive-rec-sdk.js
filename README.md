@@ -258,5 +258,5 @@ SWAGGER_URL=http://localhost:1453/swagger/brec/swagger.json yarn gen-api
 test
 
 ```
-EXEC_PATH=/path/to/BililiveRecorder.Cli yarn test
+BL_REC_PATH=/path/to/BililiveRecorder.Cli yarn test
 ```
