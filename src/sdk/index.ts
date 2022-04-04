@@ -97,7 +97,7 @@ export class Room extends SdkBase implements RoomDto {
     if (this.config) return this.config;
     return this.ctx.api.getRoomConfigByObjectId(this.objectId);
   }
-  setConfig(config: SetRoomConfig) {
+  setConfig(config: Partial<SetRoomConfig>) {
     return this.ctx.api.setRoomConfigByObjectId(this.objectId, config);
   }
   async start() {
@@ -141,7 +141,7 @@ export class BililiveRec extends SdkBase {
   getConfig() {
     return this.ctx.api.getGlobalConfig();
   }
-  setConfig(config: SetGlobalConfig) {
+  setConfig(config: Partial<SetGlobalConfig>) {
     return this.ctx.api.setGlobalConfig(config);
   }
   listRooms(): Promise<Room[]> {
