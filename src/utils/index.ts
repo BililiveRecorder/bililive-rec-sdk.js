@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-export const getRoomId = (roomId: string | number): number => {
+export function getRoomId(roomId: string | number): number {
   if (typeof roomId === "number") return roomId;
   if (Number.isInteger(Number(roomId))) return Number(roomId);
   if (roomId.includes("live.bilibili.com")) {
@@ -8,9 +8,9 @@ export const getRoomId = (roomId: string | number): number => {
     if (match) return Number(match[1]);
   }
   throw "get roomid failed";
-};
+}
 
-export const validateCookie = (cookie: string): boolean => {
+export function validateCookie(cookie: string): boolean {
   const result = Object.fromEntries(
     cookie
       .split(";")
@@ -22,9 +22,9 @@ export const validateCookie = (cookie: string): boolean => {
     result.SESSDATA &&
     result.bili_jct
   );
-};
+}
 
-export const generateExampleFilename = (template: string) => {
+export function generateExampleFilename(template: string) {
   // TODO: Path.GetInvalidFileNameChars
   const date = dayjs();
   const random = Math.floor(Math.random() * (999 - 100)) + 100;
@@ -41,4 +41,35 @@ export const generateExampleFilename = (template: string) => {
 
   if (!filename.endsWith(".flv")) filename += ".flv";
   return filename;
-};
+}
+
+export function env(key: string, type: "int"): null | number;
+export function env(key: string, type?: "string"): null | string;
+export function env(
+  key: string,
+  type: "int" | "string" = "string"
+): null | number | string {
+  const value = process.env[key];
+  if (!value) return null;
+  if (value.length === 0) return null;
+
+  if (type === "string") return value;
+  if (type === "int") {
+    const num = Number(value);
+    if (!Number.isInteger(num)) throw `${value} is not an integer`;
+    return num;
+  }
+
+  return null;
+}
+
+export class SeparatedPromise<T> extends Promise<T> {
+  public resolve: (v: T) => void = () => {};
+  public reject: (v: unknown) => void = () => {};
+  constructor() {
+    super((resolve, reject) => {
+      this.resolve = resolve;
+      this.reject = reject;
+    });
+  }
+}
