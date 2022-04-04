@@ -1,1 +1,8 @@
-tsconfig.tsbuildinfo
+*
+!dist/**/*
+!src/**/*
+!LICENSE
+!package.json
+!README.md
+!yarn.lock
+dist/api-generator/**/*
