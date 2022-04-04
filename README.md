@@ -161,49 +161,90 @@ utils.validateCookie("_uuid=ffffff; buvid3=ffffff...")
 
 ## Service
 
-Usage:
-
-```ts
-import { startService, BililiveRecService } from "@bililive/rec-sdk/dist/service";
-
-const [bililiveRec] = startService({ workdir: "somewhere" });
-
-const service = new BililiveRecService({ workdir: "somewhere" });
-const [bililiveRec] = await service.start();
-service.stop();
+```shell
+yarn add eventemitter3 express portfinder
+yarn add @types/express
 ```
 
 Environments:
 
-`HTTP_HOST`, `HTTP_PORT`, `EXEC_PATH`, `WORKDIR`
+`BL_REC_API_HOST`, `BL_REC_API_PORT`, `BL_REC_PATH`, `BL_REC_WORKDIR`
+
+Usage:
+
+```ts
+import { BililiveRecService } from "@bililive/rec-sdk/dist/service";
+
+const service = await BililiveRecService.create({ workdir: "somewhere" });
+service.bililiveRec,
+service.webhook,
+service.process
+
+service.stop();
+```
 
 Definitions:
 
 ```ts
 export interface ServiceOptions {
-  httpHost?: string;
-  httpPort?: number;
-  execPath?: string;
+  host?: string;
+  port?: number;
+  binPath?: string;
   workdir?: string;
+  webhook?: true | WebhookOptions;
 }
 
 export class BililiveRecService {
-  private options?;
-  httpHost?: string;
-  httpPort?: number;
-  execPath?: string;
-  workdir?: string;
-  bililiveRec?: BililiveRec;
-  process?: ChildProcessWithoutNullStreams;
-  constructor(options?: ServiceOptions | undefined);
-  start(): Promise<[
-      bililiveRec: BililiveRec,
-      process: ChildProcessWithoutNullStreams
-  ]>;
-  stop(): void;
+  host: string;
+  port: number;
+  execPath: string;
+  workdir: string;
+  bililiveRec: BililiveRec;
+  webhook: Webhook | null;
+  process: ChildProcessWithoutNullStreams;
+  private constructor();
+  static create(options?: ServiceOptions): Promise<BililiveRecService>;
+  stop(): Promise<void>;
 }
-export const startService: (opts?: ServiceOptions | undefined) =>
-  Promise<[bililiveRec: BililiveRec, process: ChildProcessWithoutNullStreams]>;
+```
+
+## Webhook
+
+```shell
+yarn add eventemitter3 express portfinder
+yarn add @types/express
+```
+
+Environments:
+
+`WEBHOOK_HOST`, `WEBHOOK_POST`, `WEBHOOK_PATH_PREFIX`
+
+Usage:
+
+```ts
+import { Webhook } from "@bililive/rec-sdk/dist/webhook"
+
+const webhook = await Webhook.create()
+const webhook = await Webhook.create({ host: "localhost", port: 9000 })
+
+webhook.getUrl()
+// => http://localhost:9000/webhook/default
+webhook.getUrl("second-server")
+// => http://localhost:9000/webhook/second-server
+
+webhook.on("SessionStarted", (event, instanceId) => {
+  console.loe(instanceId);
+  // => "second-server"
+  console.loe(event);
+  // => {
+  //   "EventType": "SessionStarted",
+  //   "EventTimestamp": "2021-05-14T17:52:44.4960899+08:00",
+  //   "EventId": "e3e1c9ec-f386-4bc3-9e5a-661bf3ed2fb2",
+  //   "EventData": {
+  //     ...
+  //   }
+  // }
+})
 ```
 
 ## Develop

@@ -1,63 +1,84 @@
 import { BililiveRec } from "./sdk";
 import portfinder from "portfinder";
 import { ChildProcessWithoutNullStreams, spawn } from "child_process";
+import { Webhook, WebhookOptions } from "./webhook";
+import { env, SeparatedPromise } from "./utils";
 
 export interface ServiceOptions {
-  httpHost?: string;
-  httpPort?: number;
-  execPath?: string;
+  host?: string;
+  port?: number;
+  binPath?: string;
   workdir?: string;
+  webhook?: true | WebhookOptions;
 }
 
 export class BililiveRecService {
-  httpHost?: string;
-  httpPort?: number;
-  execPath?: string;
-  workdir?: string;
-  bililiveRec?: BililiveRec;
-  process?: ChildProcessWithoutNullStreams;
-  constructor(private options?: ServiceOptions) {}
-  async start(): Promise<
-    [bililiveRec: BililiveRec, process: ChildProcessWithoutNullStreams]
-  > {
-    this.httpHost =
-      this.options?.httpHost ?? process.env.HTTP_HOST ?? "localhost";
-    this.httpPort =
-      this.options?.httpPort ||
-      Number(process.env.HTTP_PORT) ||
-      (await portfinder.getPortPromise({ host: this.httpHost, port: 1453 }));
-    this.execPath =
-      this.options?.execPath ?? process.env.EXEC_PATH ?? "BililiveRecorder.Cli";
-    this.workdir =
-      this.options?.workdir ?? process.env.WORKDIR ?? process.cwd();
+  private constructor(
+    public host: string,
+    public port: number,
+    public execPath: string,
+    public workdir: string,
+    public bililiveRec: BililiveRec,
+    public webhook: Webhook | null,
+    public process: ChildProcessWithoutNullStreams
+  ) {}
+  static async create(options?: ServiceOptions): Promise<BililiveRecService> {
+    const host = options?.host ?? env("BL_REC_API_HOST") ?? "localhost";
+    const execPath =
+      options?.binPath ?? env("BL_REC_PATH") ?? "BililiveRecorder.Cli";
+    const workdir = options?.workdir ?? env("BL_REC_WORKDIR") ?? process.cwd();
+    const port =
+      options?.port ||
+      env("BL_REC_API_PORT", "int") ||
+      (await portfinder.getPortPromise({ host, port: 1453 }));
+    const whOpts = options?.webhook;
+    let webhook: Webhook | null = null;
+    if (whOpts)
+      webhook =
+        whOpts === true ? await Webhook.create() : await Webhook.create(whOpts);
 
-    const recProcess = spawn(this.execPath, [
+    const recProcess = spawn(execPath, [
       "run",
       "--web-bind",
-      `http://${this.httpHost}:${this.httpPort}`,
-      this.workdir,
+      `http://${host}:${port}`,
+      workdir,
     ]);
 
+    const apiHost = host === "0.0.0.0" ? "127.0.0.1" : host;
     const bililiveRec = new BililiveRec({
-      httpUrl: `http://${
-        this.httpHost === "0.0.0.0" ? "127.0.0.1" : this.httpHost
-      }:${this.httpPort}`,
+      httpUrl: `http://${apiHost}:${port}`,
     });
 
-    return new Promise((resolve, reject) => {
-      recProcess?.once("exit", reject);
-      recProcess?.stdout.on("data", (chunk: Buffer) => {
-        if (!chunk.includes("Content root path")) return;
-        this.process = recProcess;
-        this.bililiveRec = bililiveRec;
-        resolve([bililiveRec, recProcess]);
+    const waitProcess = new SeparatedPromise<void>();
+    recProcess.once("exit", waitProcess.reject);
+    const dataListener = (chunk: Buffer) => {
+      if (!chunk.includes("Content root path")) return;
+      recProcess.stdout.removeListener("data", dataListener);
+      waitProcess.resolve();
+    };
+    recProcess.stdout.addListener("data", dataListener);
+    await waitProcess;
+
+    if (webhook)
+      await bililiveRec.setConfig({
+        optionalWebHookUrlsV2: {
+          hasValue: true,
+          value: webhook.getUrl(),
+        },
       });
-    });
+
+    return new BililiveRecService(
+      host,
+      port,
+      execPath,
+      workdir,
+      bililiveRec,
+      webhook,
+      recProcess
+    );
   }
-  stop(): void {
-    this.process?.kill("SIGTERM");
+  async stop() {
+    await this.webhook?.stop();
+    this.process.kill("SIGTERM");
   }
 }
-
-export const startService = (opts?: ServiceOptions) =>
-  new BililiveRecService(opts).start();
