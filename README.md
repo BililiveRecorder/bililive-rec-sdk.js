@@ -1,6 +1,12 @@
-# bililive-rec-sdk.js
+# @bililive/rec-sdk
 
 typescript sdk for Bililive/BililiveRecorder
+
+Intall: 
+
+`yarn add @bililive/rec-sdk`
+
+`npm i @bililive/rec-sdk`
 
 TODO:
 

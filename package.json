@@ -3,9 +3,14 @@
   "version": "0.0.3",
   "description": "typescript sdk for Bililive/BililiveRecorder",
   "main": "dist/index.js",
-  "repository": "git@github.com:anitya-tech/bililive-rec-sdk.js.git",
+  "repository": "https://github.com/anitya-tech/bililive-rec-sdk.js.git",
   "author": "GeekTR <geektheripper@gmail.com>",
-  "license": "MSPL",
+  "keywords": [
+    "bilibili",
+    "bililive",
+    "BililiveRecorder"
+  ],
+  "license": "(ISC OR GPL-3.0)",
   "scripts": {
     "gen-api": "ts-node src/api-generator/index.ts",
     "test": "jest",
