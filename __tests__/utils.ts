@@ -1,5 +1,5 @@
 /// <reference types="jest" />
-import 'jest-extended';
+import "./init";
 import * as utils from "../src/utils";
 
 test("utils.generateExampleFilename", () => {

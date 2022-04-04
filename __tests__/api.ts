@@ -1,6 +1,6 @@
 import { ApiInstance, GlobalConfigDto, SetGlobalConfig } from "../src/api";
 // @ts-ignore
-import { execPath, newWorkdir } from "./config";
+import { execPath, newWorkdir } from "./init";
 import { BililiveRecService } from "../src/service";
 
 describe("api", () => {
@@ -71,7 +71,6 @@ describe("api", () => {
       expect.objectContaining(initConfig)
     );
 
-    // @ts-ignore
     await expect(api.setGlobalConfig(targetConfig)).resolves.toEqual(
       expect.objectContaining(targetConfig)
     );

@@ -8,6 +8,6 @@ module.exports = {
   setupFilesAfterEnv: ["jest-extended/all"],
   testRegex: "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
   moduleFileExtensions: ["ts", "tsx", "js"],
-  testPathIgnorePatterns: ["global.d.ts", "config.ts"],
+  testPathIgnorePatterns: ["init.ts"],
   collectCoverage: true,
 };
