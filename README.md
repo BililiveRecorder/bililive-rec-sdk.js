@@ -217,7 +217,7 @@ yarn add @types/express
 
 Environments:
 
-`WEBHOOK_HOST`, `WEBHOOK_POST`, `WEBHOOK_PATH_PREFIX`
+`WEBHOOK_HOST`, `WEBHOOK_PORT`, `WEBHOOK_PATH_PREFIX`
 
 Usage:
 

@@ -54,7 +54,7 @@ export class Webhook extends eventemitter3<{
       opts?.pathPrefix ?? env("WEBHOOK_PATH_PREFIX") ?? "webhook";
     const port =
       opts?.port ??
-      env("WEBHOOK_POST", "int") ??
+      env("WEBHOOK_PORT", "int") ??
       (await portfinder.getPortPromise({ host: host, port: 9000 }));
 
     const waitServerUp = separatedPromise<void>();
