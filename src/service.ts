@@ -12,6 +12,7 @@ export interface ServiceOptions {
   binPath?: string;
   workdir?: string;
   webhook?: true | WebhookOptions;
+  extArgs?: string[];
 }
 
 export class BililiveRecService {
@@ -44,6 +45,7 @@ export class BililiveRecService {
       "--web-bind",
       `http://${host}:${port}`,
       workdir,
+      ...(options?.extArgs ?? []),
     ]);
 
     const apiHost = host === "0.0.0.0" ? "127.0.0.1" : host;
