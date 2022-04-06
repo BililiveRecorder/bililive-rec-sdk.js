@@ -31,7 +31,7 @@ export interface DefaultConfig {
   recordDanmakuGift: boolean;
   recordDanmakuGuard: boolean;
   recordingQuality: string;
-  recordFilenameFormat: string;
+  fileNameRecordTemplate: string;
   webHookUrls: string;
   webHookUrlsV2: string;
   wpfShowTitleAndArea: boolean;
@@ -177,7 +177,7 @@ export interface SetGlobalConfig {
   optionalRecordDanmakuGift: BlOptional<boolean>;
   optionalRecordDanmakuGuard: BlOptional<boolean>;
   optionalRecordingQuality: BlOptional<string>;
-  optionalRecordFilenameFormat: BlOptional<string>;
+  optionalFileNameRecordTemplate: BlOptional<string>;
   optionalWebHookUrls: BlOptional<string>;
   optionalWebHookUrlsV2: BlOptional<string>;
   optionalWpfShowTitleAndArea: BlOptional<boolean>;
