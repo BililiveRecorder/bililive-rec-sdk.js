@@ -59,6 +59,7 @@ export class Webhook extends eventemitter3<{
 
     const waitServerUp = separatedPromise<void>();
     const app = express();
+    app.use(express.json());
     const server = app.listen(port, host, () => waitServerUp.resolve());
     await waitServerUp.promise;
     return new Webhook(host, port, pathPrefix, app, server);
