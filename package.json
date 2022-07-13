@@ -1,6 +1,6 @@
 {
   "name": "@bililive/rec-sdk",
-  "version": "0.0.6",
+  "version": "2.1.1",
   "description": "",
   "type": "module",
   "main": "dist/index.js",
