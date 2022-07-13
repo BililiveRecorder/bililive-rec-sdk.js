@@ -36,7 +36,7 @@ export const parseType = (def: RawShema, depth = 0): ParsedResult => {
     const prefix = "#/components/schemas/";
     if (def.$ref.startsWith(prefix)) {
       const type = def.$ref.split(prefix)[1];
-      if (type === undefined) throw "no way"
+      if (type === undefined) throw "no way";
       const replaceType = blOptionalTypeMap[type];
       if (replaceType) return [replaceType, ["BlOptional"]];
       return [type, [type]];

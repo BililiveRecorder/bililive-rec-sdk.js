@@ -96,19 +96,25 @@ export class Room extends SdkBase implements RoomDto {
     return this;
   }
   async refreshRecordingStats() {
-    return this.roomInfo.recordingStats = await this.ctx.api.getRoomRecordingStatsByObjectId(this.objectId);
+    return (this.roomInfo.recordingStats =
+      await this.ctx.api.getRoomRecordingStatsByObjectId(this.objectId));
   }
   async refreshIoStats() {
-    return this.roomInfo.ioStats = await this.ctx.api.getRoomIoStatsByObjectId(this.objectId);
+    return (this.roomInfo.ioStats = await this.ctx.api.getRoomIoStatsByObjectId(
+      this.objectId
+    ));
   }
   getConfig() {
     if (this.config) return this.config;
     return this.ctx.api.getRoomConfigByObjectId(this.objectId);
   }
   async setConfig(config: Partial<SetRoomConfig>) {
-    const result = await this.ctx.api.setRoomConfigByObjectId(this.objectId, config);
-    delete this.config
-    return result
+    const result = await this.ctx.api.setRoomConfigByObjectId(
+      this.objectId,
+      config
+    );
+    delete this.config;
+    return result;
   }
   async start() {
     this.roomInfo = await this.ctx.api.startRecordByObjectId(this.objectId);
@@ -126,14 +132,14 @@ export class Room extends SdkBase implements RoomDto {
 
 class RoomCache {
   public cache: Record<number, Room> = [];
-  constructor(private recInstance: BililiveRec) { }
+  constructor(private recInstance: BililiveRec) {}
   add(d: RoomDto): Room {
     let room = this.cache[d.roomId];
     if (room) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      Object.assign(room.roomInfo, d)
-      return room
+      Object.assign(room.roomInfo, d);
+      return room;
     }
 
     room = new Room(this.recInstance, d);
@@ -168,7 +174,7 @@ export class BililiveRec extends SdkBase {
       .then((l) => l.map((d) => this.roomCache.add(d)));
   }
   async refreshRooms(): Promise<void> {
-    await this.listRooms()
+    await this.listRooms();
   }
   addRoom(config: CreateRoomDto) {
     return this.ctx.api.addRoom(config).then((d) => this.roomCache.add(d));
@@ -182,7 +188,13 @@ export class BililiveRec extends SdkBase {
   version() {
     return this.ctx.api.getVersion();
   }
-  generateFilename({ template, context }: { template: string, context?: Partial<FileNameTemplateContextDto> }): Promise<FileNameTemplateOutput> {
+  generateFilename({
+    template,
+    context,
+  }: {
+    template: string;
+    context?: Partial<FileNameTemplateContextDto>;
+  }): Promise<FileNameTemplateOutput> {
     return this.ctx.api.generateFilename({
       template,
       context: {
@@ -195,8 +207,8 @@ export class BililiveRec extends SdkBase {
         qn: 10000,
         json: JSON.stringify(rawBiliLiveData),
         ...context,
-      }
-    })
+      },
+    });
   }
   getFile(path: string) {
     return this.ctx.api.getFile(path);

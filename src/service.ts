@@ -13,7 +13,7 @@ export interface ServiceOptions {
   workdir?: string;
   webhook?: true | WebhookOptions;
   extArgs?: string[];
-  portable?: boolean
+  portable?: boolean;
 }
 
 export class BililiveRecService {
@@ -42,7 +42,7 @@ export class BililiveRecService {
         whOpts === true ? await Webhook.create() : await Webhook.create(whOpts);
 
     const recProcess = spawn(binPath, [
-      options?.portable ? "portable": "run",
+      options?.portable ? "portable" : "run",
       "--http-bind",
       `http://${host}:${port}`,
       workdir,

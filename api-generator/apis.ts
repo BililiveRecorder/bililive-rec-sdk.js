@@ -68,7 +68,11 @@ const generateApiCode = (
   return { lines, refTypes };
 };
 
-export interface MethodItem { name: string, path: string, summary: string }
+export interface MethodItem {
+  name: string;
+  path: string;
+  summary: string;
+}
 export const generateApiFile = (paths: OA.PathsObject) => {
   const refTypes = new Set<string>();
   const methodLines: string[] = [];
@@ -91,7 +95,7 @@ export const generateApiFile = (paths: OA.PathsObject) => {
       methodLines.push("");
       methodLines.push(...result.lines);
 
-      methods.push({ name, path, summary: methodDef.summary || "-" })
+      methods.push({ name, path, summary: methodDef.summary || "-" });
 
       result.refTypes.forEach((i) => refTypes.add(i));
     }

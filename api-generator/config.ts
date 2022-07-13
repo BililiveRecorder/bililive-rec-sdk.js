@@ -44,8 +44,7 @@ export const knownEnums: Record<string, string> = {
   TemplateError = 1,
   OutOfRange = 2,
   FileConflict = 3,
-}`
-
+}`,
 };
 
 export const apiRenameMap: Record<string, string> = {
@@ -76,5 +75,5 @@ export const apiRenameMap: Record<string, string> = {
   "/api/room/{objectId}/refresh.post": "refreshRoomByObjectId",
   "/api/version.get": "getVersion",
   "/api/file.get": "getFile",
-  "/api/misc/generatefilename.post": "generateFilename"
+  "/api/misc/generatefilename.post": "generateFilename",
 };

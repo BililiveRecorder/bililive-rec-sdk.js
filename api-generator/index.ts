@@ -15,10 +15,13 @@ const build = async () => {
   const { data: apiJson } = await axios.get(swaggerUrl);
 
   writeFile("src/api/types.ts", generateTypeFile(apiJson.components.schemas));
-  const [apiCode, apiMap] = generateApiFile(apiJson.paths)
+  const [apiCode, apiMap] = generateApiFile(apiJson.paths);
   writeFile("src/api/api.ts", apiCode);
 
-  fs.writeFileSync("sdk-map.json", JSON.stringify({ version: apiJson.version, api_map: apiMap }))
+  fs.writeFileSync(
+    "sdk-map.json",
+    JSON.stringify({ version: apiJson.version, api_map: apiMap })
+  );
 };
 
 build();
