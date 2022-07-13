@@ -2,8 +2,8 @@ import fs from "fs";
 
 import { OpenAPIV3_1 as OA } from "openapi-types";
 
-import { apiRenameMap, tab } from "./config";
-import { parseType, RawShema } from "./types";
+import { apiRenameMap, tab } from "./config.js";
+import { parseType, RawShema } from "./types.js";
 
 const generateApiCode = (
   name: string,
@@ -14,7 +14,7 @@ const generateApiCode = (
   const params: string[] = [];
   const refTypes: string[] = [];
 
-  const parameters = def.parameters as OA.ParameterObject[];
+  const parameters = def.parameters as [OA.ParameterObject];
   const requestBody = def.requestBody as OA.RequestBodyObject;
   const responses = def.responses as Record<string, OA.ResponseObject>;
 
@@ -68,9 +68,11 @@ const generateApiCode = (
   return { lines, refTypes };
 };
 
-export const generateApiFile = (paths: OA.PathsObject): string => {
+export interface MethodItem { name: string, path: string, summary: string }
+export const generateApiFile = (paths: OA.PathsObject) => {
   const refTypes = new Set<string>();
   const methodLines: string[] = [];
+  const methods: MethodItem[] = [];
 
   for (const path in paths) {
     const methodMap = paths[path] as OA.PathItemObject;
@@ -89,6 +91,8 @@ export const generateApiFile = (paths: OA.PathsObject): string => {
       methodLines.push("");
       methodLines.push(...result.lines);
 
+      methods.push({ name, path, summary: methodDef.summary || "-" })
+
       result.refTypes.forEach((i) => refTypes.add(i));
     }
   }
@@ -101,5 +105,5 @@ export const generateApiFile = (paths: OA.PathsObject): string => {
     methodLines.map((line) => (line ? `${tab}${line}` : "")).join(`\n`)
   );
 
-  return code;
+  return [code, methods] as const;
 };

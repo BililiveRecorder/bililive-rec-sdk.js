@@ -1,6 +1,6 @@
 import { OpenAPIV3_1 as OA } from "openapi-types";
 
-import { knownEnums, tab } from "./config";
+import { knownEnums, tab } from "./config.js";
 
 export type RawShema = OA.SchemaObject & {
   $ref?: string;
@@ -36,6 +36,7 @@ export const parseType = (def: RawShema, depth = 0): ParsedResult => {
     const prefix = "#/components/schemas/";
     if (def.$ref.startsWith(prefix)) {
       const type = def.$ref.split(prefix)[1];
+      if (type === undefined) throw "no way"
       const replaceType = blOptionalTypeMap[type];
       if (replaceType) return [replaceType, ["BlOptional"]];
       return [type, [type]];

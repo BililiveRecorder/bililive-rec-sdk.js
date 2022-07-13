@@ -11,7 +11,7 @@
     "dist"
   ],
   "scripts": {
-    "gen-api": "ts-node api-generator/index.ts",
+    "gen-api": "ts-node --esm api-generator/index.ts",
     "test": "jest",
     "clean": "rimraf dist",
     "build": "tsc -p tsconfig.json",
