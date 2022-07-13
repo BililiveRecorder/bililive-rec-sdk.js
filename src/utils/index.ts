@@ -1,5 +1,3 @@
-import dayjs from "dayjs";
-
 export function getRoomId(roomId: string | number): number {
   if (typeof roomId === "number") return roomId;
   if (Number.isInteger(Number(roomId))) return Number(roomId);
@@ -22,25 +20,6 @@ export function validateCookie(cookie: string): boolean {
     result.SESSDATA &&
     result.bili_jct
   );
-}
-
-export function generateExampleFilename(template: string) {
-  // TODO: Path.GetInvalidFileNameChars
-  const date = dayjs();
-  const random = Math.floor(Math.random() * (999 - 100)) + 100;
-  let filename = template
-    .replace(/{date}/g, date.format("YYYYMMDD"))
-    .replace(/{time}/g, date.format("HHmmss"))
-    .replace(/{ms}/g, date.format("SSS"))
-    .replace(/{roomid}/g, "14846654")
-    .replace(/{title}/g, "【小司无常】今天来教大家计算 20 - 1")
-    .replace(/{name}/g, "小司无常")
-    .replace(/{parea}/g, "电台")
-    .replace(/{area}/g, "聊天电台")
-    .replace(/{random}/g, random + "");
-
-  if (!filename.endsWith(".flv")) filename += ".flv";
-  return filename;
 }
 
 export function env(key: string, type: "int"): null | number;

@@ -3,18 +3,6 @@ import "./init";
 import * as utils from "../src/utils";
 
 describe("utils", () => {
-  test("generateExampleFilename", () => {
-    expect(
-      utils.generateExampleFilename(
-        "{roomid}-{name}/录制-{roomid}-{date}-{time}-{ms}-{title}.flv"
-      )
-    ).toStartWith("14846654-小司无常/录制-14846654-");
-
-    expect(utils.generateExampleFilename("-{title}")).toEndWith(
-      "-【小司无常】今天来教大家计算 20 - 1.flv"
-    );
-  });
-
   test("getRoomId", () => {
     expect(utils.getRoomId("https://live.bilibili.com/14846654")).toBe(
       14846654

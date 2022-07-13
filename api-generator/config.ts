@@ -33,6 +33,19 @@ export const knownEnums: Record<string, string> = {
   Standard = 0,
   RawData = 1,
 }`,
+  AllowedAddressFamily: `export enum AllowedAddressFamily {
+  System = -1,
+  Any = 0,
+  Ipv4 = 1,
+  Ipv6 = 2,
+}`,
+  FileNameTemplateStatus: `export enum FileNameTemplateStatus {
+  Success = 0,
+  TemplateError = 1,
+  OutOfRange = 2,
+  FileConflict = 3,
+}`
+
 };
 
 export const apiRenameMap: Record<string, string> = {
@@ -47,6 +60,8 @@ export const apiRenameMap: Record<string, string> = {
   "/api/room/{objectId}.get": "getRoomByObjectId",
   "/api/room/{roomId}/stats.get": "statsRoomByRoomId",
   "/api/room/{objectId}/stats.get": "statsRoomByObjectId",
+  "/api/room/{roomId}/iostats.get": "getRoomIoStatsByRoomId",
+  "/api/room/{objectId}/iostats.get": "getRoomIoStatsByObjectId",
   "/api/room/{roomId}/config.get": "getRoomConfigByRoomId",
   "/api/room/{roomId}/config.post": "setRoomConfigByRoomId",
   "/api/room/{objectId}/config.get": "getRoomConfigByObjectId",
@@ -58,6 +73,8 @@ export const apiRenameMap: Record<string, string> = {
   "/api/room/{roomId}/split.post": "splitRecordByRoomId",
   "/api/room/{objectId}/split.post": "splitRecordByObjectId",
   "/api/room/{roomId}/refresh.post": "refreshRoomByRoomId",
-  "/api/room/{objectId}/refresh.post": "refreshRoomObjectId",
+  "/api/room/{objectId}/refresh.post": "refreshRoomByObjectId",
   "/api/version.get": "getVersion",
+  "/api/file.get": "getFile",
+  "/api/misc/generatefilename.post": "generateFilename"
 };

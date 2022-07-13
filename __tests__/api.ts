@@ -11,6 +11,7 @@ describe("api", () => {
     service = await BililiveRecService.create({
       binPath,
       workdir: newWorkdir(),
+      portable: true,
     });
     api = service.bililiveRec.ctx.api;
     console.log("service.workdir", service.workdir);
@@ -21,8 +22,8 @@ describe("api", () => {
   test("getVersion", async () => {
     await expect(api.getVersion()).resolves.toEqual(
       expect.objectContaining({
-        major: "1",
-        minor: "3",
+        major: "2",
+        minor: "1",
       })
     );
   });
@@ -30,8 +31,8 @@ describe("api", () => {
   test("getDefaultConfig", async () => {
     await expect(api.getDefaultConfig()).resolves.toEqual(
       expect.objectContaining({
-        recordFilenameFormat:
-          "{roomid}-{name}/录制-{roomid}-{date}-{time}-{ms}-{title}.flv",
+        fileNameRecordTemplate:
+          '{{ roomId }}-{{ name }}/录制-{{ roomId }}-{{ "now" | time_zone: "Asia/Shanghai" | format_date: "yyyyMMdd-HHmmss-fff" }}-{{ title }}.flv',
       })
     );
   });
@@ -43,7 +44,7 @@ describe("api", () => {
         value: 0,
       },
       optionalRecordDanmaku: {
-        hasValue: false,
+        hasValue: true,
         value: false,
       },
       optionalWebHookUrlsV2: {

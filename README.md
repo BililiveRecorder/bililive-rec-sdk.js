@@ -11,6 +11,7 @@ Intall:
 TODO:
 
 - [ ] Test case
+- [ ] use liquid template
 
 ## Sdk
 
@@ -163,7 +164,7 @@ utils.validateCookie("_uuid=ffffff; buvid3=ffffff...")
 
 ```shell
 yarn add eventemitter3 express portfinder
-yarn add @types/express
+yarn add -D @types/express
 ```
 
 Environments:
@@ -192,6 +193,8 @@ export interface ServiceOptions {
   binPath?: string;
   workdir?: string;
   webhook?: true | WebhookOptions;
+  extArgs?: string[];
+  portable?: boolean
 }
 
 export class BililiveRecService {
@@ -212,7 +215,7 @@ export class BililiveRecService {
 
 ```shell
 yarn add eventemitter3 express portfinder
-yarn add @types/express
+yarn add -D @types/express
 ```
 
 Environments:

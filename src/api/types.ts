@@ -7,6 +7,13 @@ export interface BlOptional<T> {
   hasValue: boolean;
   value: null | T;
 }
+export enum AllowedAddressFamily {
+  System = -1,
+  Any = 0,
+  Ipv4 = 1,
+  Ipv6 = 2,
+}
+
 export interface CreateRoomDto {
   roomId: number;
   autoRecord: boolean;
@@ -32,6 +39,7 @@ export interface DefaultConfig {
   recordDanmakuGuard: boolean;
   recordingQuality: string;
   fileNameRecordTemplate: string;
+  flvProcessorSplitOnScriptTag: boolean;
   webHookUrls: string;
   webHookUrlsV2: string;
   wpfShowTitleAndArea: boolean;
@@ -44,6 +52,61 @@ export interface DefaultConfig {
   timingDanmakuRetry: number;
   timingWatchdogTimeout: number;
   recordDanmakuFlushInterval: number;
+  networkTransportUseSystemProxy: boolean;
+  networkTransportAllowedAddressFamily: AllowedAddressFamily;
+  userScript: string;
+}
+
+export interface FileApiResult {
+  exist: boolean;
+  path: string;
+  files: unknown[];
+}
+
+export interface FileDto {
+  isFolder: boolean;
+  size: number;
+  url: string;
+}
+
+export interface FileLikeDto {
+  isFolder: boolean;
+  name: string;
+  lastModified: string;
+}
+
+export interface FileNameTemplateContextDto {
+  roomId: number;
+  shortId: number;
+  name: string;
+  title: string;
+  areaParent: string;
+  areaChild: string;
+  qn: number;
+  json: string;
+}
+
+export interface FileNameTemplateOutput {
+  status: FileNameTemplateStatus;
+  errorMessage: string;
+  relativePath: string;
+  fullPath: string;
+}
+
+export enum FileNameTemplateStatus {
+  Success = 0,
+  TemplateError = 1,
+  OutOfRange = 2,
+  FileConflict = 3,
+}
+
+export interface FolderDto {
+  isFolder: boolean;
+}
+
+export interface GenerateFileNameInput {
+  template: string;
+  context: FileNameTemplateContextDto;
 }
 
 export interface GlobalConfigDto {
@@ -56,7 +119,8 @@ export interface GlobalConfigDto {
   optionalRecordDanmakuGift: BlOptional<boolean>;
   optionalRecordDanmakuGuard: BlOptional<boolean>;
   optionalRecordingQuality: BlOptional<string>;
-  optionalRecordFilenameFormat: BlOptional<string>;
+  optionalFileNameRecordTemplate: BlOptional<string>;
+  optionalFlvProcessorSplitOnScriptTag: BlOptional<boolean>;
   optionalWebHookUrls: BlOptional<string>;
   optionalWebHookUrlsV2: BlOptional<string>;
   optionalWpfShowTitleAndArea: BlOptional<boolean>;
@@ -69,6 +133,9 @@ export interface GlobalConfigDto {
   optionalTimingDanmakuRetry: BlOptional<number>;
   optionalTimingWatchdogTimeout: BlOptional<number>;
   optionalRecordDanmakuFlushInterval: BlOptional<number>;
+  optionalNetworkTransportUseSystemProxy: BlOptional<boolean>;
+  optionalNetworkTransportAllowedAddressFamily: BlOptional<AllowedAddressFamily>;
+  optionalUserScript: BlOptional<string>;
 }
 
 export enum RecordMode {
@@ -139,6 +206,7 @@ export interface RoomConfigDto {
   optionalRecordDanmakuGift: BlOptional<boolean>;
   optionalRecordDanmakuGuard: BlOptional<boolean>;
   optionalRecordingQuality: BlOptional<string>;
+  optionalFlvProcessorSplitOnScriptTag: BlOptional<boolean>;
 }
 
 export interface RoomDto {
@@ -154,17 +222,44 @@ export interface RoomDto {
   streaming: boolean;
   danmakuConnected: boolean;
   autoRecordForThisSession: boolean;
-  stats: RoomStatsDto;
+  recordingStats: RoomRecordingStatsDto;
+  ioStats: RoomIOStatsDto;
 }
 
-export interface RoomStatsDto {
+export interface RoomIOStatsDto {
+  streamHost: string;
+  startTime: string;
+  endTime: string;
+  duration: number;
+  networkBytesDownloaded: number;
+  networkMbps: number;
+  diskWriteDuration: number;
+  diskBytesWritten: number;
+  diskMBps: number;
+}
+
+export interface RoomRecordingStatsDto {
   sessionDuration: number;
-  sessionMaxTimestamp: number;
-  fileMaxTimestamp: number;
-  durationRatio: number;
   totalInputBytes: number;
   totalOutputBytes: number;
-  networkMbps: number;
+  currentFileSize: number;
+  sessionMaxTimestamp: number;
+  fileMaxTimestamp: number;
+  addedDuration: number;
+  passedTime: number;
+  durationRatio: number;
+  inputVideoBytes: number;
+  inputAudioBytes: number;
+  outputVideoFrames: number;
+  outputAudioFrames: number;
+  outputVideoBytes: number;
+  outputAudioBytes: number;
+  totalInputVideoBytes: number;
+  totalInputAudioBytes: number;
+  totalOutputVideoFrames: number;
+  totalOutputAudioFrames: number;
+  totalOutputVideoBytes: number;
+  totalOutputAudioBytes: number;
 }
 
 export interface SetGlobalConfig {
@@ -178,6 +273,7 @@ export interface SetGlobalConfig {
   optionalRecordDanmakuGuard: BlOptional<boolean>;
   optionalRecordingQuality: BlOptional<string>;
   optionalFileNameRecordTemplate: BlOptional<string>;
+  optionalFlvProcessorSplitOnScriptTag: BlOptional<boolean>;
   optionalWebHookUrls: BlOptional<string>;
   optionalWebHookUrlsV2: BlOptional<string>;
   optionalWpfShowTitleAndArea: BlOptional<boolean>;
@@ -190,6 +286,9 @@ export interface SetGlobalConfig {
   optionalTimingDanmakuRetry: BlOptional<number>;
   optionalTimingWatchdogTimeout: BlOptional<number>;
   optionalRecordDanmakuFlushInterval: BlOptional<number>;
+  optionalNetworkTransportUseSystemProxy: BlOptional<boolean>;
+  optionalNetworkTransportAllowedAddressFamily: BlOptional<AllowedAddressFamily>;
+  optionalUserScript: BlOptional<string>;
 }
 
 export interface SetRoomConfig {
@@ -203,4 +302,5 @@ export interface SetRoomConfig {
   optionalRecordDanmakuGift: BlOptional<boolean>;
   optionalRecordDanmakuGuard: BlOptional<boolean>;
   optionalRecordingQuality: BlOptional<string>;
+  optionalFlvProcessorSplitOnScriptTag: BlOptional<boolean>;
 }

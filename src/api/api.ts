@@ -8,11 +8,15 @@ import { AxiosInstance, AxiosRequestConfig, Method } from "axios";
 import {
   CreateRoomDto,
   DefaultConfig,
+  FileApiResult,
+  FileNameTemplateOutput,
+  GenerateFileNameInput,
   GlobalConfigDto,
   RecorderVersion,
   RoomConfigDto,
   RoomDto,
-  RoomStatsDto,
+  RoomIOStatsDto,
+  RoomRecordingStatsDto,
   SetGlobalConfig,
   SetRoomConfig
 } from "./types";
@@ -49,6 +53,12 @@ export class ApiInstance {
   // 设置全局设置
   setGlobalConfig = genApi("/api/config/global", "post") as (payload: Partial<SetGlobalConfig>) => Promise<GlobalConfigDto>
 
+  // 获取录播目录文件信息
+  getFile = genApi("/api/file", "get", "path") as (path: string) => Promise<FileApiResult>
+
+  // 根据传入参数生成录播文件名
+  generateFilename = genApi("/api/misc/generatefilename", "post") as (payload: GenerateFileNameInput) => Promise<FileNameTemplateOutput>
+
   // 列出所有直播间
   listRooms = genApi("/api/room", "get") as () => Promise<RoomDto[]>
 
@@ -67,11 +77,17 @@ export class ApiInstance {
   // 读取一个直播间
   getRoomByObjectId = genApi("/api/room/{objectId}", "get", "objectId") as (objectId: string) => Promise<RoomDto>
 
-  // 读取直播间统计信息
-  statsRoomByRoomId = genApi("/api/room/{roomId}/stats", "get", "roomId") as (roomId: number) => Promise<RoomStatsDto>
+  // 读取直播间录制统计信息
+  statsRoomByRoomId = genApi("/api/room/{roomId}/stats", "get", "roomId") as (roomId: number) => Promise<RoomRecordingStatsDto>
 
-  // 读取直播间统计信息
-  statsRoomByObjectId = genApi("/api/room/{objectId}/stats", "get", "objectId") as (objectId: string) => Promise<RoomStatsDto>
+  // 读取直播间录制统计信息
+  statsRoomByObjectId = genApi("/api/room/{objectId}/stats", "get", "objectId") as (objectId: string) => Promise<RoomRecordingStatsDto>
+
+  // 读取直播间 IO 统计信息
+  getRoomIoStatsByRoomId = genApi("/api/room/{roomId}/iostats", "get", "roomId") as (roomId: number) => Promise<RoomIOStatsDto>
+
+  // 读取直播间 IO 统计信息
+  getRoomIoStatsByObjectId = genApi("/api/room/{objectId}/iostats", "get", "objectId") as (objectId: string) => Promise<RoomIOStatsDto>
 
   // 读取直播间设置
   getRoomConfigByRoomId = genApi("/api/room/{roomId}/config", "get", "roomId") as (roomId: number) => Promise<RoomConfigDto>
@@ -107,7 +123,7 @@ export class ApiInstance {
   refreshRoomByRoomId = genApi("/api/room/{roomId}/refresh", "post", "roomId") as (roomId: number) => Promise<RoomDto>
 
   // 刷新直播间信息
-  refreshRoomObjectId = genApi("/api/room/{objectId}/refresh", "post", "objectId") as (objectId: string) => Promise<RoomDto>
+  refreshRoomByObjectId = genApi("/api/room/{objectId}/refresh", "post", "objectId") as (objectId: string) => Promise<RoomDto>
 
   // 读取软件版本信息
   getVersion = genApi("/api/version", "get") as () => Promise<RecorderVersion>

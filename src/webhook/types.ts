@@ -13,6 +13,9 @@ export interface SessionStartedData {
   Title: string;
   AreaNameParent: string;
   AreaNameChild: string;
+  Recording: boolean;
+  Streaming: boolean;
+  DanmakuConnected: boolean;
 }
 export type SessionStartedEvent = BililiveRecEventWrap<
   "SessionStarted",

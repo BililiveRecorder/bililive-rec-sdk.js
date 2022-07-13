@@ -50,8 +50,11 @@ export class Room extends SdkBase implements RoomDto {
   get autoRecordForThisSession() {
     return this.roomInfo.autoRecordForThisSession;
   }
-  get stats() {
-    return this.roomInfo.stats;
+  get recordingStats() {
+    return this.roomInfo.recordingStats;
+  }
+  get ioStats() {
+    return this.roomInfo.ioStats;
   }
 
   async transferTo(target: BililiveRec, newConfig?: Partial<SetRoomConfig>) {
@@ -89,9 +92,9 @@ export class Room extends SdkBase implements RoomDto {
     this.roomInfo = await this.ctx.api.getRoomByObjectId(this.objectId);
     return this;
   }
-  async refreshStats() {
-    this.roomInfo.stats = await this.ctx.api.statsRoomByObjectId(this.objectId);
-    return this.stats;
+  async refreshRecordingStats() {
+    this.roomInfo.recordingStats = await this.ctx.api.statsRoomByObjectId(this.objectId);
+    return this.recordingStats;
   }
   getConfig() {
     if (this.config) return this.config;
