@@ -78,10 +78,10 @@ export class ApiInstance {
   getRoomByObjectId = genApi("/api/room/{objectId}", "get", "objectId") as (objectId: string) => Promise<RoomDto>
 
   // 读取直播间录制统计信息
-  statsRoomByRoomId = genApi("/api/room/{roomId}/stats", "get", "roomId") as (roomId: number) => Promise<RoomRecordingStatsDto>
+  getRoomRecordingStatsByRoomId = genApi("/api/room/{roomId}/stats", "get", "roomId") as (roomId: number) => Promise<RoomRecordingStatsDto>
 
   // 读取直播间录制统计信息
-  statsRoomByObjectId = genApi("/api/room/{objectId}/stats", "get", "objectId") as (objectId: string) => Promise<RoomRecordingStatsDto>
+  getRoomRecordingStatsByObjectId = genApi("/api/room/{objectId}/stats", "get", "objectId") as (objectId: string) => Promise<RoomRecordingStatsDto>
 
   // 读取直播间 IO 统计信息
   getRoomIoStatsByRoomId = genApi("/api/room/{roomId}/iostats", "get", "roomId") as (roomId: number) => Promise<RoomIOStatsDto>
