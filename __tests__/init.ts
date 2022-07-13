@@ -1,10 +1,10 @@
 import "jest-extended";
 
-import path from "path";
-import os from "os";
 import fs from "fs";
+import os from "os";
+import path from "path";
 
-process.env.BL_REC_PATH =
+export const binPath =
   process.env.BL_REC_PATH ||
   path.resolve(
     os.homedir(),

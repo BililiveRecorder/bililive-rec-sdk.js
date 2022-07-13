@@ -1,7 +1,7 @@
-import { ApiInstance, GlobalConfigDto, SetGlobalConfig } from "../src/api";
-// @ts-ignore
-import { binPath, newWorkdir } from "./init";
-import { BililiveRecService } from "../src/service";
+import { ApiInstance, SetGlobalConfig } from "../src/api/index.js";
+import { BililiveRecService } from "../src/service.js";
+
+import { binPath, newWorkdir } from "./init.js";
 
 describe("api", () => {
   let service: BililiveRecService;

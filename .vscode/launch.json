@@ -2,18 +2,19 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug Jest Tests",
+      "name": "ts-node",
       "type": "node",
       "request": "launch",
+      "args": ["${relativeFile}"],
       "runtimeArgs": [
-        "--inspect-brk",
-        "${workspaceRoot}/node_modules/.bin/jest",
-        "--runInBand",
-        "--coverage",
-        "false"
+        "--experimental-specifier-resolution=node",
+        "--no-warnings",
+        "--loader",
+        "ts-node/esm"
       ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
+      "cwd": "${workspaceRoot}",
+      "protocol": "inspector",
+      "internalConsoleOptions": "openOnSessionStart"
     }
   ]
 }

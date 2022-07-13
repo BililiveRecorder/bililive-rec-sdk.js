@@ -1,47 +1,54 @@
 {
   "name": "@bililive/rec-sdk",
   "version": "0.0.6",
-  "description": "typescript sdk for Bililive/BililiveRecorder",
+  "description": "",
+  "type": "module",
   "main": "dist/index.js",
   "repository": "https://github.com/BililiveRecorder/sdk.js.git",
   "author": "GeekTR <geektheripper@gmail.com>",
-  "keywords": [
-    "bilibili",
-    "bililive",
-    "BililiveRecorder"
+  "license": "GPL-3.0-or-later",
+  "files": [
+    "dist"
   ],
-  "license": "(ISC OR GPL-3.0)",
   "scripts": {
     "gen-api": "ts-node api-generator/index.ts",
     "test": "jest",
+    "clean": "rimraf dist",
     "build": "tsc -p tsconfig.json",
     "fix": "run-s fix:*",
     "fix:prettier": "prettier \"src/**/*.ts\" --write",
     "fix:lint": "eslint src --ext .ts --fix",
-    "watch:build": "tsc -p tsconfig.json -w"
+    "watch:build": "tsc -p tsconfig.json -w",
+    "publish:patch": "yarn publish --patch --access public",
+    "push": "git push",
+    "bpp": "run-s fix clean build publish:patch push"
+  },
+  "engines": {
+    "node": ">=14.16"
   },
   "devDependencies": {
+    "@sindresorhus/tsconfig": "^2.0.0",
     "@types/express": "^4.17.13",
-    "@types/jest": "^27.4.1",
-    "@types/node": "^14.14.10",
-    "@typescript-eslint/eslint-plugin": "^4.9.1",
-    "@typescript-eslint/parser": "^4.9.1",
-    "axios": "^0.26.1",
-    "eslint": "^7.15.0",
-    "eslint-config-prettier": "^7.0.0",
+    "@types/jest": "^28.1.5",
+    "@types/node": "^16",
+    "@typescript-eslint/eslint-plugin": "^5.18.0",
+    "@typescript-eslint/parser": "^5.18.0",
+    "axios": "^0.27.2",
+    "eslint": "^8.13.0",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-eslint-comments": "^3.2.0",
-    "eslint-plugin-import": "^2.22.1",
-    "express": "^4.17.3",
-    "jest": "^27.5.1",
-    "jest-extended": "^2.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "express": "^4.18.1",
+    "jest": "^28.1.2",
+    "jest-extended": "^3.0.0",
     "npm-run-all": "^4.1.5",
-    "open-cli": "^6.0.1",
-    "openapi-types": "^10.0.0",
+    "openapi-types": "^12.0.0",
     "portfinder": "^1.0.28",
-    "prettier": "^2.2.1",
-    "ts-jest": "^27.1.4",
-    "ts-node": "^9.1.0",
-    "typescript": "^4.1.2"
+    "prettier": "^2.6.2",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^28.0.5",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.3"
   },
   "dependencies": {
     "eventemitter3": "^4.0.7"

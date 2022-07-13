@@ -12,3 +12,8 @@ data
 logs
 dist
 tsconfig.tsbuildinfo
+
+.env
+
+playground
+playground.ts

@@ -13,7 +13,7 @@ export function validateCookie(cookie: string): boolean {
     cookie
       .split(";")
       .map((i) => i.split(/=(.+)/))
-      .map(([k, v]) => [k.trim(), v])
+      .map(([k, v]) => [k?.trim(), v])
   );
   return !!(
     Number.isInteger(Number(result.DedeUserID)) &&
