@@ -1,5 +1,7 @@
 import {
   CreateRoomDto,
+  FileNameTemplateContextDto,
+  FileNameTemplateOutput,
   RoomConfigDto,
   RoomDto,
   SetGlobalConfig,
@@ -7,6 +9,7 @@ import {
 } from "../api";
 
 import { SdkBase, SdkContext, SdkCtxOptions } from "./base";
+import { rawBiliLiveData } from "./raw-data.js";
 
 export class Room extends SdkBase implements RoomDto {
   private config?: RoomConfigDto;
@@ -93,15 +96,19 @@ export class Room extends SdkBase implements RoomDto {
     return this;
   }
   async refreshRecordingStats() {
-    this.roomInfo.recordingStats = await this.ctx.api.statsRoomByObjectId(this.objectId);
-    return this.recordingStats;
+    return this.roomInfo.recordingStats = await this.ctx.api.getRoomRecordingStatsByObjectId(this.objectId);
+  }
+  async refreshIoStats() {
+    return this.roomInfo.ioStats = await this.ctx.api.getRoomIoStatsByObjectId(this.objectId);
   }
   getConfig() {
     if (this.config) return this.config;
     return this.ctx.api.getRoomConfigByObjectId(this.objectId);
   }
-  setConfig(config: Partial<SetRoomConfig>) {
-    return this.ctx.api.setRoomConfigByObjectId(this.objectId, config);
+  async setConfig(config: Partial<SetRoomConfig>) {
+    const result = await this.ctx.api.setRoomConfigByObjectId(this.objectId, config);
+    delete this.config
+    return result
   }
   async start() {
     this.roomInfo = await this.ctx.api.startRecordByObjectId(this.objectId);
@@ -119,9 +126,17 @@ export class Room extends SdkBase implements RoomDto {
 
 class RoomCache {
   public cache: Record<number, Room> = [];
-  constructor(private recInstance: BililiveRec) {}
+  constructor(private recInstance: BililiveRec) { }
   add(d: RoomDto): Room {
-    const room = new Room(this.recInstance, d);
+    let room = this.cache[d.roomId];
+    if (room) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      Object.assign(room.roomInfo, d)
+      return room
+    }
+
+    room = new Room(this.recInstance, d);
     this.cache[room.roomId] = room;
     return room;
   }
@@ -152,6 +167,9 @@ export class BililiveRec extends SdkBase {
       .listRooms()
       .then((l) => l.map((d) => this.roomCache.add(d)));
   }
+  async refreshRooms(): Promise<void> {
+    await this.listRooms()
+  }
   addRoom(config: CreateRoomDto) {
     return this.ctx.api.addRoom(config).then((d) => this.roomCache.add(d));
   }
@@ -163,5 +181,24 @@ export class BililiveRec extends SdkBase {
   }
   version() {
     return this.ctx.api.getVersion();
+  }
+  generateFilename({ template, context }: { template: string, context?: Partial<FileNameTemplateContextDto> }): Promise<FileNameTemplateOutput> {
+    return this.ctx.api.generateFilename({
+      template,
+      context: {
+        roomId: 8760033,
+        shortId: 1453,
+        name: "小司无常",
+        title: "【小司无常】今天来教大家计算 20 - 1",
+        areaParent: "电台",
+        areaChild: "聊天电台",
+        qn: 10000,
+        json: JSON.stringify(rawBiliLiveData),
+        ...context,
+      }
+    })
+  }
+  getFile(path: string) {
+    return this.ctx.api.getFile(path);
   }
 }
