@@ -6,6 +6,10 @@ typescript sdk for Bililive/BililiveRecorder
 
 [Document](https://rec.danmuji.org/dev/sdk.js)
 
+## Todo
+
+- [ ] More test case
+
 ## Develop
 
 generator api and it's type:
