@@ -24,7 +24,7 @@ describe("api", () => {
       expect.objectContaining({
         major: "2",
         minor: "1",
-      })
+      }),
     );
   });
 
@@ -33,7 +33,7 @@ describe("api", () => {
       expect.objectContaining({
         fileNameRecordTemplate:
           '{{ roomId }}-{{ name }}/录制-{{ roomId }}-{{ "now" | time_zone: "Asia/Shanghai" | format_date: "yyyyMMdd-HHmmss-fff" }}-{{ title }}.flv',
-      })
+      }),
     );
   });
 
@@ -69,11 +69,11 @@ describe("api", () => {
     };
 
     await expect(api.getGlobalConfig()).resolves.toEqual(
-      expect.objectContaining(initConfig)
+      expect.objectContaining(initConfig),
     );
 
     await expect(api.setGlobalConfig(targetConfig)).resolves.toEqual(
-      expect.objectContaining(targetConfig)
+      expect.objectContaining(targetConfig),
     );
   });
 });

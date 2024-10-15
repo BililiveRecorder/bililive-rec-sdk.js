@@ -90,7 +90,7 @@ const blOptionalTypeMap: Record<string, string> = {};
 
 const generateTypeDef = (
   name: string,
-  schema: RawShema
+  schema: RawShema,
 ): string | undefined => {
   const [type] = parseType(schema);
 
@@ -120,7 +120,7 @@ export const generateTypeFile = (schemas: { [type: string]: RawShema }) => {
 `;
 
   Object.entries(schemas).map(([name, schema]) =>
-    generateTypeDef(name, schema)
+    generateTypeDef(name, schema),
   );
 
   body += Object.entries(schemas)

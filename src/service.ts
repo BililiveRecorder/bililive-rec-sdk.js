@@ -2,9 +2,9 @@ import { ChildProcessWithoutNullStreams, spawn } from "child_process";
 
 import portfinder from "portfinder";
 
-import { BililiveRec } from "./sdk";
-import { env, separatedPromise } from "./utils";
-import { Webhook, WebhookOptions } from "./webhook";
+import { BililiveRec } from "./sdk/index.js";
+import { env, separatedPromise } from "./utils/index.js";
+import { Webhook, WebhookOptions } from "./webhook/index.js";
 
 export interface ServiceOptions {
   host?: string;
@@ -24,7 +24,7 @@ export class BililiveRecService {
     public workdir: string,
     public bililiveRec: BililiveRec,
     public webhook: Webhook | null,
-    public process: ChildProcessWithoutNullStreams
+    public process: ChildProcessWithoutNullStreams,
   ) {}
   static async create(options?: ServiceOptions): Promise<BililiveRecService> {
     const host = options?.host ?? env("BL_REC_API_HOST") ?? "localhost";
@@ -79,7 +79,7 @@ export class BililiveRecService {
       workdir,
       bililiveRec,
       webhook,
-      recProcess
+      recProcess,
     );
   }
   async stop() {

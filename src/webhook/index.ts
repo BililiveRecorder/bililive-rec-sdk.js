@@ -5,9 +5,9 @@ import eventemitter3 from "eventemitter3";
 import express, { Application } from "express";
 import portfinder from "portfinder";
 
-import { env, separatedPromise } from "../utils";
+import { env, separatedPromise } from "../utils/index.js";
 
-import { BililiveRecEvent, BililiveRecEventMap } from "./types";
+import { BililiveRecEvent, BililiveRecEventMap } from "./types.js";
 
 export interface WebhookOptions {
   host?: string;
@@ -19,7 +19,7 @@ export type WebhookEventMap = BililiveRecEventMap & {
   all: BililiveRecEvent;
 };
 
-export class Webhook extends eventemitter3<{
+export class Webhook extends eventemitter3.EventEmitter<{
   [k in keyof WebhookEventMap]: [event: WebhookEventMap[k], instanceId: string];
 }> {
   private constructor(
@@ -27,7 +27,7 @@ export class Webhook extends eventemitter3<{
     public port: number,
     public pathPrefix: string,
     public app: Application,
-    public server: Server
+    public server: Server,
   ) {
     super();
 
@@ -41,11 +41,11 @@ export class Webhook extends eventemitter3<{
         const emitParams = [body.EventType, body, instanceId] as [
           k: keyof WebhookEventMap,
           event: WebhookEventMap[keyof WebhookEventMap],
-          instanceId: string
+          instanceId: string,
         ];
         this.emit(...emitParams);
         res.sendStatus(200);
-      }
+      },
     );
   }
   static async create(opts?: WebhookOptions): Promise<Webhook> {

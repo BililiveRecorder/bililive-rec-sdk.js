@@ -13,7 +13,7 @@ export function validateCookie(cookie: string): boolean {
     cookie
       .split(";")
       .map((i) => i.split(/=(.+)/))
-      .map(([k, v]) => [k?.trim(), v])
+      .map(([k, v]) => [k?.trim(), v]),
   );
   return !!(
     Number.isInteger(Number(result.DedeUserID)) &&
@@ -26,7 +26,7 @@ export function env(key: string, type: "int"): null | number;
 export function env(key: string, type?: "string"): null | string;
 export function env(
   key: string,
-  type: "int" | "string" = "string"
+  type: "int" | "string" = "string",
 ): null | number | string {
   const value = process.env[key];
   if (!value) return null;
@@ -48,7 +48,6 @@ export interface SeparatedPromise<T> {
   reject: (v?: unknown) => void;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
 function empty() {}
 export function separatedPromise<T>(): SeparatedPromise<T> {
   let resolve: (v: T) => void = empty;

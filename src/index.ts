@@ -1,4 +1,4 @@
-export * as Api from "./api";
-export { ApiInstance } from "./api";
-export * as utils from "./utils";
-export { BililiveRec } from "./sdk";
+export * as Api from "./api/index.js";
+export { ApiInstance } from "./api/index.js";
+export * as utils from "./utils/index.js";
+export { BililiveRec } from "./sdk/index.js";

@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 
-import { ApiInstance } from "../api";
+import { ApiInstance } from "../api/index.js";
 
 export interface SdkCtxOptions {
   httpUrl?: string;

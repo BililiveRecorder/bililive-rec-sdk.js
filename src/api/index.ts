@@ -1,2 +1,2 @@
-export { ApiInstance } from "./api";
-export * from "./types";
+export { ApiInstance } from "./api.js";
+export * from "./types.js";

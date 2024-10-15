@@ -20,7 +20,7 @@ const build = async () => {
 
   fs.writeFileSync(
     "sdk-map.json",
-    JSON.stringify({ version: apiJson.version, api_map: apiMap })
+    JSON.stringify({ version: apiJson.version, api_map: apiMap }),
   );
 };
 

@@ -6,14 +6,17 @@ import {
   RoomDto,
   SetGlobalConfig,
   SetRoomConfig,
-} from "../api";
+} from "../api/index.js";
 
-import { SdkBase, SdkContext, SdkCtxOptions } from "./base";
+import { SdkBase, SdkContext, SdkCtxOptions } from "./base.js";
 import { rawBiliLiveData } from "./raw-data.js";
 
 export class Room extends SdkBase implements RoomDto {
   private config?: RoomConfigDto;
-  constructor(public parent: BililiveRec, private roomInfo: RoomDto) {
+  constructor(
+    public parent: BililiveRec,
+    private roomInfo: RoomDto,
+  ) {
     super(parent.ctx);
   }
 
@@ -74,7 +77,7 @@ export class Room extends SdkBase implements RoomDto {
     });
     const latestConfig = await target.ctx.api.setRoomConfigByRoomId(
       this.roomId,
-      config
+      config,
     );
 
     await this.remove();
@@ -101,7 +104,7 @@ export class Room extends SdkBase implements RoomDto {
   }
   async refreshIoStats() {
     return (this.roomInfo.ioStats = await this.ctx.api.getRoomIoStatsByObjectId(
-      this.objectId
+      this.objectId,
     ));
   }
   getConfig() {
@@ -111,7 +114,7 @@ export class Room extends SdkBase implements RoomDto {
   async setConfig(config: Partial<SetRoomConfig>) {
     const result = await this.ctx.api.setRoomConfigByObjectId(
       this.objectId,
-      config
+      config,
     );
     delete this.config;
     return result;

@@ -2,10 +2,9 @@
   "extends": "@sindresorhus/tsconfig",
   "compilerOptions": {
     "outDir": "dist",
-    "target": "es2020",
-    "lib": ["es2020"],
-    "noPropertyAccessFromIndexSignature": false,
-    "esModuleInterop": true
+    "target": "ES2023",
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }

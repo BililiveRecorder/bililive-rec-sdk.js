@@ -8,7 +8,7 @@ export const binPath =
   process.env.BL_REC_PATH ||
   path.resolve(
     os.homedir(),
-    "projects/github.com/Bililive/BililiveRecorder/BililiveRecorder.Cli/bin/Debug/net6.0/BililiveRecorder.Cli"
+    "projects/github.com/Bililive/BililiveRecorder/BililiveRecorder.Cli/bin/Debug/net6.0/BililiveRecorder.Cli",
   );
 
 export const workdirPrefix = process.env.BL_WORKDIR_PREFIX || "data";

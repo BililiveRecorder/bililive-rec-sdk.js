@@ -1,6 +1,6 @@
 import fs from "fs";
 
-import { OpenAPIV3_1 as OA } from "openapi-types";
+import type { OpenAPIV3_1 as OA } from "openapi-types";
 
 import { apiRenameMap, tab } from "./config.js";
 import { parseType, RawShema } from "./types.js";
@@ -9,7 +9,7 @@ const generateApiCode = (
   name: string,
   path: string,
   method: OA.HttpMethods,
-  def: OA.OperationObject
+  def: OA.OperationObject,
 ): { lines: string[]; refTypes: string[] } => {
   const params: string[] = [];
   const refTypes: string[] = [];
@@ -23,7 +23,7 @@ const generateApiCode = (
     if (parameters.length > 1) throw `refactor it, bro`;
     const { schema, name } = parameters[0];
     const [type, refs] = parseType(schema as RawShema);
-    refs && refTypes.push(...refs);
+    if (refs) refTypes.push(...refs);
     params.push(`${name}: ${type}`);
 
     pathParam = name;
@@ -32,7 +32,7 @@ const generateApiCode = (
   const bodyDef = requestBody?.content["application/json"];
   if (bodyDef) {
     const [type, refs] = parseType(bodyDef.schema as RawShema);
-    refs && refTypes.push(...refs);
+    if (refs) refTypes.push(...refs);
     if (
       name === "setGlobalConfig" ||
       name === "setRoomConfigByRoomId" ||
@@ -49,7 +49,7 @@ const generateApiCode = (
   if (responseDef) {
     const [type, refs] = parseType(responseDef.schema as RawShema);
     responseType = type;
-    refs && refTypes.push(...refs);
+    if (refs) refTypes.push(...refs);
   }
 
   const _params = params.join(", ");
@@ -57,11 +57,11 @@ const generateApiCode = (
   lines.push(`// ${def.summary}`);
   if (pathParam) {
     lines.push(
-      `${name} = genApi("${path}", "${method}", "${pathParam}") as (${_params}) => Promise<${responseType}>`
+      `${name} = genApi("${path}", "${method}", "${pathParam}") as (${_params}) => Promise<${responseType}>`,
     );
   } else {
     lines.push(
-      `${name} = genApi("${path}", "${method}") as (${_params}) => Promise<${responseType}>`
+      `${name} = genApi("${path}", "${method}") as (${_params}) => Promise<${responseType}>`,
     );
   }
 
@@ -106,7 +106,7 @@ export const generateApiFile = (paths: OA.PathsObject) => {
   code = code.replace("__ref_types__", [...refTypes].sort().join(`,\n${tab}`));
   code = code.replace(
     "__methods__",
-    methodLines.map((line) => (line ? `${tab}${line}` : "")).join(`\n`)
+    methodLines.map((line) => (line ? `${tab}${line}` : "")).join(`\n`),
   );
 
   return [code, methods] as const;
